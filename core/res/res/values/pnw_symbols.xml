@@ -42,5 +42,19 @@
     <java-symbol type="bool" name="config_enableScreenrecordChord" />
 
     <!-- sensor block per-package -->
-  <java-symbol type="array" name="config_blockPackagesSensorDrain" />
+    <java-symbol type="array" name="config_blockPackagesSensorDrain" />
+
+    <!-- Notification light -->
+    <java-symbol type="bool" name="config_intrusiveNotificationLed" />
+    <java-symbol type="bool" name="config_multiColorNotificationLed" />
+    <java-symbol type="array" name="notification_light_package_mapping" />
+    <java-symbol type="array" name="config_notificationNoAlertsVibePattern" />
+
+    <!-- Battery light -->
+    <java-symbol type="bool" name="config_intrusiveBatteryLed" />
+    <java-symbol type="bool" name="config_multiColorBatteryLed" />
+
+    <!-- LED pulse -->
+    <java-symbol type="bool" name="config_ledCanPulse" />
+
 </resources>
