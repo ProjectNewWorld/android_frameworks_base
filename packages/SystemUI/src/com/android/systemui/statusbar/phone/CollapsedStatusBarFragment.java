@@ -41,6 +41,7 @@ import com.android.systemui.statusbar.policy.EncryptionHelper;
 import com.android.systemui.statusbar.policy.KeyguardMonitor;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
+import com.android.systemui.statusbar.policy.NetworkTraffic;
 
 /**
  * Contains the collapsed status bar and handles hiding/showing based on disable flags
@@ -61,6 +62,23 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private DarkIconManager mDarkIconManager;
     private SignalClusterView mSignalClusterView;
 
+    // pnw additions start
+    private boolean mShowNetworkTraffic;
+    private final Handler mHandler = new Handler();
+    private NetworkTraffic mNetworkTraffic;
+
+    private class PnwSettingsObserver extends ContentObserver {
+        PnwSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings(true);
+        }
+    }
+    private PnwSettingsObserver mPnwSettingsObserver = new PnwSettingsObserver(mHandler);
+
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void setIsAirplaneMode(NetworkController.IconState icon) {
@@ -74,6 +92,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mKeyguardMonitor = Dependency.get(KeyguardMonitor.class);
         mNetworkController = Dependency.get(NetworkController.class);
         mStatusBarComponent = SysUiServiceProvider.getComponent(getContext(), StatusBar.class);
+        mPnwSettingsObserver.observe();
     }
 
     @Override
@@ -94,6 +113,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mSystemIconArea = mStatusBar.findViewById(R.id.system_icon_area);
         mSignalClusterView = mStatusBar.findViewById(R.id.signal_cluster);
         Dependency.get(DarkIconDispatcher.class).addDarkReceiver(mSignalClusterView);
+        mNetworkTraffic = (NetworkTraffic) mStatusBar.findViewById(R.id.networkTraffic);
+        updateSettings(false);
         // Default to showing until we know otherwise.
         showSystemIconArea(false);
         initEmergencyCryptkeeperText();
@@ -200,7 +221,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     }
 
     public void hideNotificationIconArea(boolean animate) {
-        animateHide(mNotificationIconAreaInner, animate);
+        animateHide(mNotificationIconAreaInner, animate, true);
+        if (mShowNetworkTraffic) {
+            animateHide(mNetworkTraffic, animate, true);
+        }
     }
 
     public void showNotificationIconArea(boolean animate) {
