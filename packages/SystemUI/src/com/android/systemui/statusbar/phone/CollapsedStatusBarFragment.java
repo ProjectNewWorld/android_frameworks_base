@@ -22,7 +22,12 @@ import static com.android.systemui.statusbar.phone.StatusBar.reinflateSignalClus
 import android.annotation.Nullable;
 import android.app.Fragment;
 import android.app.StatusBarManager;
+import android.content.ContentResolver;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +38,7 @@ import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.SysUiServiceProvider;
+import com.android.systemui.pnw.NetworkTraffic;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.phone.StatusBarIconController.DarkIconManager;
@@ -41,7 +47,6 @@ import com.android.systemui.statusbar.policy.EncryptionHelper;
 import com.android.systemui.statusbar.policy.KeyguardMonitor;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
-import com.android.systemui.statusbar.policy.NetworkTraffic;
 
 /**
  * Contains the collapsed status bar and handles hiding/showing based on disable flags
@@ -72,9 +77,29 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             super(handler);
         }
 
+        void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
+
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.NETWORK_TRAFFIC_ENABLE), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.NETWORK_TRAFFIC_STATE), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.NETWORK_TRAFFIC_AUTOHIDE), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD), false,
+                    this, UserHandle.USER_ALL);
+        }
+
         @Override
         public void onChange(boolean selfChange) {
             updateSettings(true);
+            if (mNetworkTraffic != null) {
+                mNetworkTraffic.updateSettings();
+            }
         }
     }
     private PnwSettingsObserver mPnwSettingsObserver = new PnwSettingsObserver(mHandler);
@@ -115,6 +140,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         Dependency.get(DarkIconDispatcher.class).addDarkReceiver(mSignalClusterView);
         mNetworkTraffic = (NetworkTraffic) mStatusBar.findViewById(R.id.networkTraffic);
         updateSettings(false);
+        mNetworkTraffic.updateSettings();
         // Default to showing until we know otherwise.
         showSystemIconArea(false);
         initEmergencyCryptkeeperText();
@@ -213,7 +239,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     }
 
     public void hideSystemIconArea(boolean animate) {
-        animateHide(mSystemIconArea, animate);
+        animateHide(mSystemIconArea, animate, true);
     }
 
     public void showSystemIconArea(boolean animate) {
@@ -234,7 +260,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     /**
      * Hides a view.
      */
-    private void animateHide(final View v, boolean animate) {
+    private void animateHide(final View v, boolean animate, final boolean invisible) {
         v.animate().cancel();
         if (!animate) {
             v.setAlpha(0f);
@@ -292,4 +318,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             parent.removeView(emergencyViewStub);
         }
     }
+
+    public void updateSettings(boolean animate) {
+        if (getContext() == null) {
+            return;
+        }
+    }    
 }
