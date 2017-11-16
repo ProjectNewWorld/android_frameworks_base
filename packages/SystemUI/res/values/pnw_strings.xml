@@ -40,10 +40,9 @@
     <string name="screenrecord_notif_error">Unable to record screen</string>
     <string name="notification_channel_screenrecord">Screenrecords</string>
 
-    <!-- Screenrecord Tile -->
+     <!-- QS Tiles -->
+    <string name="quick_settings_screenshot_label">Screenshot</string>
     <string name="quick_settings_screenrecord">Screenrecord</string>
-
-     <!-- PiP Tile -->
     <string name="quick_settings_pip_label">PiP</string>
     <string name="quick_settings_pip_tile_app_na">App does not support PiP</string>
 
