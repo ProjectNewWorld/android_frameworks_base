@@ -42,10 +42,13 @@
 
      <!-- QS Tiles -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+    <string name="quick_settings_region_screenshot_label">Partial screenshot</string>
     <string name="quick_settings_screenrecord">Screenrecord</string>
     <string name="quick_settings_pip_label">PiP</string>
     <string name="quick_settings_pip_tile_app_na">App does not support PiP</string>
     <string name="quick_settings_caffeine_label">Caffeine</string>
+    <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
+    <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
 
     <!-- Heads Up QS Tile -->
     <string name="quick_settings_heads_up_label">Heads up</string>
