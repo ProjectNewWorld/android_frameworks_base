@@ -34,7 +34,7 @@ import android.view.WindowManager;
 
 import java.util.Locale;
 
-public class pnwUtils {
+public class PnwUtils {
 
     private static int sDeviceType = -1;
     private static final int DEVICE_PHONE = 0;
