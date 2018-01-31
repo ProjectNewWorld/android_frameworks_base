@@ -7570,12 +7570,12 @@ public class StatusBar extends SystemUI implements DemoMode,
             }
         }
 
-        if(isPackageBlacklisted(sbn.getPackageName())) {
+        if (!mUseHeadsUp && !isDozing() || isDeviceInVrMode()) {
+            if (DEBUG) Log.d(TAG, "No peeking: no huns or vr mode");
             return false;
         }
 
-        if (!mUseHeadsUp || isDeviceInVrMode()) {
-            if (DEBUG) Log.d(TAG, "No peeking: no huns or vr mode");
+        if (isPackageBlacklisted(sbn.getPackageName())) {
             return false;
         }
 
