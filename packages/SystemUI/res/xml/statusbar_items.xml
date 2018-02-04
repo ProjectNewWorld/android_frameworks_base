@@ -35,18 +35,6 @@
         android:title="@string/quick_settings_cast_title" />
 
     <com.android.systemui.tuner.StatusBarSwitch
-        android:key="volte"
-        android:title="@string/status_bar_volte" />
-
-    <com.android.systemui.tuner.StatusBarSwitch
-        android:key="vpn"
-        android:title="@string/status_bar_vpn" />
-
-    <com.android.systemui.tuner.StatusBarSwitch
-        android:key="roaming"
-        android:title="@string/status_bar_roaming" />
-
-    <com.android.systemui.tuner.StatusBarSwitch
         android:key="ethernet"
         android:title="@string/status_bar_ethernet" />
 
@@ -65,10 +53,6 @@
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="mobile"
         android:title="@string/quick_settings_cellular_detail_title" />
-
-    <com.android.systemui.tuner.StatusBarSwitch
-        android:key="nfc"
-        android:title="@string/status_bar_nfc" />
 
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="rotate"
